@@ -20,8 +20,8 @@
  * THE SOFTWARE.
  */
 
-#include "EventHandler.hpp"
-#include "EventBus.hpp"
+#include "../include/EventHandler.hpp"
+#include "../include/EventBus.hpp"
 #include "Player.hpp"
 
 #include "PlayerMoveEvent.hpp"

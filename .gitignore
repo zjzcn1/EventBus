@@ -1,0 +1,61 @@
+## General
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.cuo
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Compiled python
+*.pyc
+
+# Eclipse Project settings
+*.*project
+.settings
+
+# Editor temporaries
+*.swp
+*.swo
+.tags
+*~
+
+# Visual Studio Code files
+.vscode
+
+# OSX dir files
+.DS_Store
+
+# User's build configuration
+Makefile.config
+
+# build, distribute, and bins (+ python proto bindings)
+build
+.build_debug/*
+.build_release/*
+distribute/*
+*.testbin
+*.bin
+cmake_build
+.cmake_build
+
+
+
+*.settings
+*.classpath
+*.class
+*.log
+*.iml
+
+/logs/
+*/target/
+/target/
+/.idea/
