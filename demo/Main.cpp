@@ -2,82 +2,71 @@
 #include "../include/EventListener.h"
 #include "../include/EventBus.h"
 
-#include "PlayerChatEvent.hpp"
-
 #include <string>
 #include <iostream>
 
-class PlayerListener : public EventListener<PlayerChatEvent>
-{
+
+class PlayerChatEvent : public Event {
 public:
-	PlayerListener() { }
+    PlayerChatEvent(std::string const &msg) :
+            msg(msg) {
+    }
 
-	virtual ~PlayerListener() { }
+    virtual ~PlayerChatEvent() {}
 
-	virtual void onEvent(PlayerChatEvent & e) override {
-		std::cout<<"The msg:" << e.getMessage()<<std::endl;
-	}
-
-};
-
-
-
-/**
- * \brief Demo class showing off some functionality of the EventBus
- */
-class EventBusDemo
-{
-public:
-	EventBusDemo() {
-		playerChatReg = nullptr;
-	}
-
-	virtual ~EventBusDemo() { }
-
-
-	void start() {
-
-		PlayerListener playerListener;
-
-		playerChatReg = EventBus::addListener<PlayerChatEvent>(playerListener);
-
-		PlayerChatEvent chat1("Hello I am Player 1!");
-		EventBus::fireEvent(chat1);
-
-		PlayerChatEvent chat2("Hello I am Player 2!");
-		EventBus::fireEvent(chat2);
-
-
-		// The HandlerRegistration object can be used to unregister the event listener
-		playerChatReg->removeListener();
-
-
-		// If a chat event is fired again, it will not be serviced since the handler has been unregistered
-		PlayerChatEvent chat3("This chat message will not be serviced");
-		EventBus::fireEvent(chat3);
-
-		delete playerChatReg;
-	}
+    std::string const &getMessage() {
+        return msg;
+    }
 
 private:
-	EventRegistration* playerChatReg;
+    std::string const msg;
+
+};
+
+class PlayerListener : public EventListener<PlayerChatEvent> {
+public:
+    PlayerListener() {}
+
+    virtual ~PlayerListener() {}
+
+    virtual void onEvent(PlayerChatEvent &e) override {
+        std::cout << "The msg:" << e.getMessage() << std::endl;
+    }
 
 };
 
 
-int main()
-{
-	printf("* * * EventBus Demo Program * * * \n");
+int main() {
+    printf("* * * EventBus Demo Program * * * \n");
 
-	try
-	{
-		EventBusDemo demo;
-		demo.start();
-	}
-	catch (std::runtime_error & e)
-	{
-		printf("Runtime exception: %s\n", e.what());
-	}
+    try {
+        PlayerListener playerListener;
+
+        EventBus::addListener<PlayerChatEvent>(playerListener);
+
+        PlayerChatEvent chat1("Hello I am Player 1!");
+        EventBus::fireEvent(chat1);
+
+        PlayerChatEvent chat2("Hello I am Player 2!");
+        EventBus::fireEvent(chat2);
+
+
+        // The HandlerRegistration object can be used to unregister the event listener
+        EventBus::removeListener(playerListener);
+
+        // If a chat event is fired again, it will not be serviced since the handler has been unregistered
+        PlayerChatEvent chat3("This chat message will not be serviced");
+        EventBus::fireEvent(chat3);
+
+        EventBus::addListener<PlayerChatEvent>(playerListener);
+
+        // If a chat event is fired again, it will not be serviced since the handler has been unregistered
+        PlayerChatEvent chat4("Hello I am Player 4!");
+        EventBus::fireEvent(chat4);
+    }
+    catch (std::runtime_error &e) {
+        printf("Runtime exception: %s\n", e.what());
+    }
 }
 
 
