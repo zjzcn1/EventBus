@@ -8,23 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/bin)
 set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
-############ include ###############
-include_directories(
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-############ build lib ############
-add_library(${PROJECT_NAME} SHARED
-        src/EventBus.cpp
-        )
-
 ############ build exe ############
-add_executable(demo
-        #        ${COSTMAP_SRC}
+add_executable(${PROJECT_NAME}
         demo/Main.cpp
         )
-
-target_link_libraries(
-        demo
-        ${PROJECT_NAME}
-)

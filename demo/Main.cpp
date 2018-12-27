@@ -1,72 +1,55 @@
+#include <utility>
 
-#include "../include/EventListener.h"
-#include "../include/EventBus.h"
+#include <utility>
+
+
+#include "../src/EventBus.h"
+#include "../src/ThreadPool.h"
 
 #include <string>
 #include <iostream>
 
+using namespace eventbus;
 
-class PlayerChatEvent : public Event {
-public:
-    PlayerChatEvent(std::string const &msg) :
-            msg(msg) {
+struct ChatMsg {
+    explicit ChatMsg(std::string m) {
+        msg = std::move(m);
     }
-
-    virtual ~PlayerChatEvent() {}
-
-    std::string const &getMessage() {
-        return msg;
-    }
-
-private:
-    std::string const msg;
-
+    std::string msg;
 };
 
-class PlayerListener : public EventListener<PlayerChatEvent> {
-public:
-    PlayerListener() {}
+void onEvent(ChatMsg &e) {
+    std::cout << "The msg:" << e.msg << std::endl;
+}
 
-    virtual ~PlayerListener() {}
-
-    virtual void onEvent(PlayerChatEvent &e) override {
-        std::cout << "The msg:" << e.getMessage() << std::endl;
-    }
-
-};
-
+int test(int a) {
+    return a+2;
+}
 
 int main() {
-    printf("* * * EventBus Demo Program * * * \n");
 
-    try {
-        PlayerListener playerListener;
+//    ThreadPool pool(4);
+//
+//    auto result1 = pool.execute([](int answer) { return answer + 1 ; }, 42);
+//    std::cout << result1.get() << std::endl;
+//
+//    auto result = pool.execute(test, 42);
+//    std::cout << result.get() << std::endl;
+//
+//    EventBus::subscribe<ChatMsg>([](ChatMsg &e) {
+//        std::cout<<e.msg << std::endl;;
+//    });
 
-        EventBus::addListener<PlayerChatEvent>(playerListener);
+    EventBus::subscribe<ChatMsg>(onEvent);
 
-        PlayerChatEvent chat1("Hello I am Player 1!");
-        EventBus::fireEvent(chat1);
+    ChatMsg chat1("Hello I am Player 1!");
+    EventBus::publish<ChatMsg>(chat1);
 
-        PlayerChatEvent chat2("Hello I am Player 2!");
-        EventBus::fireEvent(chat2);
+    ChatMsg chat2("Hello I am Player 2!");
+    EventBus::publish(chat2);
 
-
-        // The HandlerRegistration object can be used to unregister the event listener
-        EventBus::removeListener(playerListener);
-
-        // If a chat event is fired again, it will not be serviced since the handler has been unregistered
-        PlayerChatEvent chat3("This chat message will not be serviced");
-        EventBus::fireEvent(chat3);
-
-        EventBus::addListener<PlayerChatEvent>(playerListener);
-
-        // If a chat event is fired again, it will not be serviced since the handler has been unregistered
-        PlayerChatEvent chat4("Hello I am Player 4!");
-        EventBus::fireEvent(chat4);
-    }
-    catch (std::runtime_error &e) {
-        printf("Runtime exception: %s\n", e.what());
-    }
+    ChatMsg chat3("publishAsync");
+    EventBus::publishAsync<ChatMsg>(chat3);
 }
 
 
