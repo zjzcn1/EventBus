@@ -16,10 +16,14 @@ struct ChatMsg {
         msg = std::move(m);
     }
     std::string msg;
+
+    typedef std::shared_ptr<ChatMsg const> ConstPtr;
 };
 
-void onEvent(ChatMsg &e) {
-    std::cout << "The msg:" << e.msg << std::endl;
+
+
+void onEvent(ChatMsg::ConstPtr e) {
+    std::cout << "The msg:" << e->msg << std::endl;
 }
 
 int test(int a) {
@@ -42,14 +46,15 @@ int main() {
 
     EventBus::subscribe<ChatMsg>(onEvent);
 
-    ChatMsg chat1("Hello I am Player 1!");
-    EventBus::publish<ChatMsg>(chat1);
+//    ChatMsg chat1("Hello I am Player 1!");
+//    EventBus::publish<ChatMsg>(chat1);
 
-    ChatMsg chat2("Hello I am Player 2!");
-    EventBus::publish(chat2);
+    ChatMsg::ConstPtr chat2 = ChatMsg::ConstPtr(new ChatMsg("Hello I am Player 2!"));
+    EventBus::publish<ChatMsg>(chat2);
+//
+//    std::this_thread::sleep_for(std::chrono::seconds(4));
 
-    ChatMsg chat3("publishAsync");
+    ChatMsg::ConstPtr chat3 = ChatMsg::ConstPtr(new ChatMsg("Hello I am publishAsync!"));
     EventBus::publishAsync<ChatMsg>(chat3);
 }
-
 
