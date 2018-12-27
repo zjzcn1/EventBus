@@ -5,7 +5,7 @@
 #include <typeindex>
 #include <map>
 #include <functional>
-#include <iostream>
+#include <thread>
 
 #include "ThreadPool.h"
 
@@ -26,7 +26,7 @@ namespace eventbus {
     class EventBus {
     public:
         EventBus() {
-            pool_ = std::make_shared<ThreadPool>(4);
+            pool_ = std::make_shared<ThreadPool>(std::thread::hardware_concurrency());
         }
 
         virtual ~EventBus() = default;
